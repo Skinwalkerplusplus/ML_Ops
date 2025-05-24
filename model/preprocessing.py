@@ -1,7 +1,7 @@
 from torchvision import transforms
 
 
-def preprocess():
+def preprocess_1():
     image = Image.open(image_path)
 
     transform = transforms.Compose([
@@ -13,3 +13,6 @@ def preprocess():
     # Preprocesamos imagen
     image = transform(image).unsqueeze(0)  # Dimensión de batch
     image = image.to(device)
+
+def preprocess(image):
+    return image
