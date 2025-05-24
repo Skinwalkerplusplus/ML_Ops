@@ -1,12 +1,16 @@
 from fastapi import FastAPI
 from model.preprocessing import preprocess
-import joblib
+from ultralytics import YOLO
+import torch
 
 app = FastAPI()
-model = joblib.load("model/model.pkl")  # Load your trained model
+model = YOLO("model/Food_seg_model.pt")
 
 @app.post("/predict")
 def predict(input_data: dict):
-    processed_data = preprocess(input_data)  # Use your preprocessing
+    processed_data = preprocess(input_data)
     prediction = model.predict([processed_data])
-    return {"prediction": prediction.tolist()}
+    with torch.no_grad():
+        output = model(processed_data)
+
+    return output.item()
