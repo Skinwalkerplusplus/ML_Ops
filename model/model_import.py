@@ -6,14 +6,12 @@ from torchvision import transforms
 import torch.nn as nn
 import torchvision.models as models
 
-# Cargamos ResNet para poner nuestro modelo por encima
 
 class ResNet18Regressor(nn.Module):
     def __init__(self, use_mask=False):
         super(ResNet18Regressor, self).__init__()
         in_channels = 4 if use_mask else 3
 
-        # Cargamos ResNet
         self.resnet = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
 
         if in_channels != 3:
@@ -39,11 +37,11 @@ class ResNet18Regressor(nn.Module):
         return self.resnet(x)
 
 
-#def load_reg_model():
-#    model_reg = ResNet18Regressor(use_mask=False)
-#    model_reg = torch.load('model/Food_estimator.pt', map_location='cpu')
-#    return model_reg
+def load_reg_model():
+    model_reg = ResNet18Regressor(use_mask=False)
+    model_reg = torch.load('model/Food_estimator.pt', map_location='cuda')
+    return model_reg
 
-#def load_seg_model():
-#    model = YOLO("model/Food_seg_model.pt")
-#    return model
+def load_seg_model():
+    model = YOLO("model/Food_seg_model2.pt")
+    return model

@@ -1,8 +1,13 @@
-from fastapi.testclient import TestClient
-from app.main import app
+import requests
+import cv2
 
-client = TestClient(app)
+# Load image
+image = cv2.imread("test.jpg")
+_, img_encoded = cv2.imencode(".jpg", image)
 
-def test_predict():
-    response = client.post("/predict", json={"feature": 5.1})
-    assert response.status_code == 200
+# Send to API
+response = requests.post(
+    "http://localhost/predict",
+    files={"file": ("test.jpg", img_encoded.tobytes())}
+)
+print(response.json())

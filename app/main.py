@@ -1,32 +1,34 @@
 from fastapi import FastAPI
 import cv2
 from model.preprocessing import preprocess
-#from model.model_import import load_seg_model
+from model.model_import import load_seg_model
 #from model.model_import import load_reg_model
-
+import torch
+import torch.nn as nn
+import torchvision.models as models
 
 app = FastAPI()
 
-#model = load_seg_model()
+model = load_seg_model()
 #model_reg = load_reg_model()
 
 @app.post("/predict")
 def predict(input_data):
     processed_data = preprocess(input_data)
-    #prediction = model.predict([processed_data])
-    #results = model(processed_data, stream=True)
+    prediction = model.predict([processed_data])
+    results = model(processed_data, stream=True)
 
-    #for result in results:
+    for result in results:
 
-    #    annotated_frame = result.plot()
+        annotated_frame = result.plot()
 
-    #    pred_text, annotated_frame = run_regressor(result, processed_data, annotated_frame)
+        pred_text, annotated_frame = run_regressor(result, processed_data, annotated_frame)
 
-    return None #pred_text, annotated_frame 
+    return pred_text, annotated_frame 
 
 def run_regressor(result, frame, annotated_frame):
     try:
-        # Comprobamos si hay m�scaras
+        # Comprobamos si hay mscaras
         if hasattr(result, 'masks') and result.masks is not None and len(result.masks.data) > 0:
             predictions = []
 
@@ -52,18 +54,19 @@ def run_regressor(result, frame, annotated_frame):
                     cropped_tensor = (cropped_tensor.to(device) - mean) / std
 
                     # Pasamos datos al modelo
-                    with torch.no_grad():
-                        prediction = model_reg(cropped_tensor.unsqueeze(0))
+                    #with torch.no_grad():
+                        #prediction = model_reg(cropped_tensor.unsqueeze(0))
 
-                    # Texto que aparecer�
-                    pred_text = f"Estimate: {prediction.item():.2f}"
-                    predictions.append(pred_text)
+                    # Texto que aparecer
+                    #pred_text = f"Estimate: {prediction.item():.2f}"
+                    #predictions.append(pred_text)
+                    pred_text = "hola"
 
-                    # A�adimos al frame
+                    # Aadimos al frame
                     if hasattr(result, 'boxes') and result.boxes is not None and i < len(result.boxes.xyxy):
                         x1, y1, x2, y2 = map(int, result.boxes.xyxy[i].cpu().numpy())
                         cv2.putText(annotated_frame, pred_text,
-                                    (x1, y1 - 30), # Offset de
+                                    (x1, y1 - 30),
                                     cv2.FONT_HERSHEY_SIMPLEX,
                                     0.7, (0, 255, 0), 2)
 
