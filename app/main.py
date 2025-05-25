@@ -1,10 +1,4 @@
-import sys
-import io
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
-
 from fastapi import FastAPI
-import torch
 import cv2
 from model.preprocessing import preprocess
 #from model.model_import import load_seg_model
@@ -32,7 +26,7 @@ def predict(input_data):
 
 def run_regressor(result, frame, annotated_frame):
     try:
-        # Comprobamos si hay máscaras
+        # Comprobamos si hay mï¿½scaras
         if hasattr(result, 'masks') and result.masks is not None and len(result.masks.data) > 0:
             predictions = []
 
@@ -61,11 +55,11 @@ def run_regressor(result, frame, annotated_frame):
                     with torch.no_grad():
                         prediction = model_reg(cropped_tensor.unsqueeze(0))
 
-                    # Texto que aparecerá
+                    # Texto que aparecerï¿½
                     pred_text = f"Estimate: {prediction.item():.2f}"
                     predictions.append(pred_text)
 
-                    # Añadimos al frame
+                    # Aï¿½adimos al frame
                     if hasattr(result, 'boxes') and result.boxes is not None and i < len(result.boxes.xyxy):
                         x1, y1, x2, y2 = map(int, result.boxes.xyxy[i].cpu().numpy())
                         cv2.putText(annotated_frame, pred_text,

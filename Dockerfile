@@ -1,11 +1,11 @@
-FROM python:3.9-slim
-ENV LANG=C.UTF-8
-ENV LC_ALL=C.UTF-8
-ENV PYTHONIOENCODING=utf-8
-RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
+FROM python:3.10-slim
+RUN apt-get update && \
+    apt-get install -y \
+    libgl1 \
     libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
+    libsm6 \
+    libxrender1 \
+    libxext6
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

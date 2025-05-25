@@ -3,4 +3,5 @@ uvicorn==0.34.2
 ultralytics==8.2.0
 torch==2.3.0
 torchvision==0.18.0
-opencv-python==4.9.0.80
+numpy==1.23.5
+opencv-python==4.7.0.72
