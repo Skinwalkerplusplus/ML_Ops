@@ -1,4 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File, Response
+from fastapi.responses import HTMLResponse
+from PIL import Image
+import io
 import cv2
 from model.preprocessing import preprocess
 from model.model_import import load_seg_model
@@ -6,25 +9,44 @@ from model.model_import import load_seg_model
 import torch
 import torch.nn as nn
 import torchvision.models as models
+import numpy as np
 
 app = FastAPI()
 
 model = load_seg_model()
 #model_reg = load_reg_model()
 
+@app.get("/", response_class=HTMLResponse)
+def home():
+    return """
+    <h1>YOLO Model Server</h1>
+    <p>Try <a href="/predict">/predict</a></p>
+    """
+
 @app.post("/predict")
-def predict(input_data):
-    processed_data = preprocess(input_data)
-    prediction = model.predict([processed_data])
-    results = model(processed_data, stream=True)
+async def predict(file: UploadFile = File(...)):
+    #processed_data = preprocess(input_data)
+
+    try:
+        image_bytes = await file.read()
+        image_np = np.frombuffer(image_bytes, np.uint8)
+        img = cv2.imdecode(image_np, cv2.IMREAD_COLOR)
+    except:
+        print('File type not supported')
+
+    #prediction = model.predict([processed_data])
+    results = model(img)
+    
 
     for result in results:
 
         annotated_frame = result.plot()
 
-        pred_text, annotated_frame = run_regressor(result, processed_data, annotated_frame)
+        pred_text, annotated_frame = run_regressor(result, img, annotated_frame)
 
-    return pred_text, annotated_frame 
+    _, jpg_bytes = cv2.imencode(".jpg", annotated_frame)
+
+    return Response(content=jpg_bytes.tobytes(), media_type="image/jpeg")
 
 def run_regressor(result, frame, annotated_frame):
     try:
@@ -33,7 +55,8 @@ def run_regressor(result, frame, annotated_frame):
             predictions = []
 
             # Device del modelo para evitar error
-            device = next(model_reg.parameters()).device
+            #device = next(model_reg.parameters()).device
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
             for i, mask in enumerate(result.masks.data):
                 try:

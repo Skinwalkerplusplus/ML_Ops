@@ -43,5 +43,5 @@ def load_reg_model():
     return model_reg
 
 def load_seg_model():
-    model = YOLO("model/Food_seg_model2.pt")
+    model = YOLO("model/Food_seg_model2.pt", task="segment")
     return model
