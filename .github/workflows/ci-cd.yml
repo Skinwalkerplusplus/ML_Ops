@@ -32,7 +32,7 @@ jobs:
         fi
     
     - name: Build Docker image
-      run: docker build --no-cache -t ml-api .
+      run: docker build --no-cache -t ml-api:${{ github.sha }} .
 
     - name: Save Docker image
       run: |
