@@ -24,8 +24,13 @@ jobs:
     
     - name: Build Docker image
       run: docker build --no-cache -t ml-api .
-    
+
     - name: Save Docker image
+      run: |
+          docker save ml-api:${{ github.sha }} -o /tmp/docker-image.tar
+          ls -lh /tmp/docker-image.tar
+    
+    - name: Upload Docker image
       uses: actions/upload-artifact@v4
       with:
         name: docker-image
