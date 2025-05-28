@@ -1,0 +1,67 @@
+name: CI/CD Pipeline
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11.12'
+    
+    - name: Install dependencies
+      run: pip install -r requirements.txt pytest
+    
+    - name: Run tests
+      run: pytest -v
+    
+    - name: Build Docker image
+      run: docker build --no-cache -t ml-api .
+    
+    - name: Save Docker image
+      uses: actions/upload-artifact@v3
+      with:
+        name: docker-image
+        path: /tmp/docker-image.tar
+        if-no-files-found: error
+
+  deploy:
+    needs: test-and-build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download Docker image
+      uses: actions/download-artifact@v3
+      with:
+        name: docker-image
+        
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+    
+    - name: Push to Registry
+      run: |
+        docker load -i /tmp/docker-image.tar
+        docker tag ml-api skinwalkerirl/ml-api:${{ github.sha }}
+        docker push skinwalkerirl/ml-api:${{ github.sha }}
+    
+    # - name: Deploy to Server
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: ${{ secrets.SSH_HOST }}
+    #     username: ${{ secrets.SSH_USER }}
+    #     key: ${{ secrets.SSH_KEY }}
+    #     script: |
+    #       docker pull skinwalkerirl/ml-api:${{ github.sha }}
+    #       docker-compose up -d
