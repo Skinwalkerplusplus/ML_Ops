@@ -26,7 +26,7 @@ jobs:
       run: docker build --no-cache -t ml-api .
     
     - name: Save Docker image
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: docker-image
         path: /tmp/docker-image.tar
@@ -40,7 +40,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Download Docker image
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: docker-image
         
