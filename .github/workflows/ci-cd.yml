@@ -66,7 +66,7 @@ jobs:
     
     - name: Push to Registry
       run: |
-        docker tag ml-api skinwalkerirl/ml-api:${{ github.sha }}
+        docker tag ml-api:${{ github.sha }} skinwalkerirl/ml-api:${{ github.sha }}
         docker push skinwalkerirl/ml-api:${{ github.sha }}
     
     # - name: Deploy to Server
