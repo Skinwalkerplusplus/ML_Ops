@@ -64,6 +64,9 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_TOKEN }}
     
+    - name: Build Docker image
+      run: docker build --no-cache -t ml-api:${{ github.sha }} 
+    
     - name: Push to Registry
       run: |
         docker tag ml-api:${{ github.sha }} skinwalkerirl/ml-api:${{ github.sha }}
