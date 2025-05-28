@@ -104,3 +104,5 @@ def run_regressor(result, frame, annotated_frame):
     except Exception as e:
         print(f"Error in run_regressor: {str(e)}")
         return None, annotated_frame
+
+# hello
