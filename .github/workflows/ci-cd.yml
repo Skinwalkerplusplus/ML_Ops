@@ -39,12 +39,12 @@ jobs:
     #       docker save ml-api:${{ github.sha }} -o /tmp/docker-image.tar
     #       ls -lh /tmp/docker-image.tar
     
-    - name: Upload Docker image
-      uses: actions/upload-artifact@v4
-      with:
-        name: docker-image
-        path: /tmp/docker-image.tar
-        if-no-files-found: error
+    # - name: Upload Docker image
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: docker-image
+    #     path: /tmp/docker-image.tar
+    #     if-no-files-found: error
 
   deploy:
     needs: test-and-build
