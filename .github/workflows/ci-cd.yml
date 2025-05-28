@@ -31,8 +31,8 @@ jobs:
           ls -la /tmp
         fi
     
-    - name: Build Docker image
-      run: docker build --no-cache -t ml-api:${{ github.sha }} .
+    # - name: Build Docker image
+    #   run: docker build --no-cache -t ml-api:${{ github.sha }} .
 
     # - name: Save Docker image
     #   run: |
@@ -65,7 +65,7 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_TOKEN }}
     
     - name: Build Docker image
-      run: docker build --no-cache -t ml-api:${{ github.sha }} 
+      run: docker build --no-cache -t ml-api:${{ github.sha }} .
     
     - name: Push to Registry
       run: |
