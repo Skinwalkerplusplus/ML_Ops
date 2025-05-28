@@ -21,6 +21,15 @@ jobs:
     
     - name: Run tests
       run: pytest -v
+
+    - name: Debug /tmp directory
+      run: |
+        echo "Runner OS: $RUNNER_OS"
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          ls "${{ runner.temp }}"
+        else
+          ls -la /tmp
+        fi
     
     - name: Build Docker image
       run: docker build --no-cache -t ml-api .
