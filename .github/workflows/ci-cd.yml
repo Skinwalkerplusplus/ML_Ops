@@ -31,6 +31,8 @@ jobs:
           ls -la /tmp
         fi
     
+    # Posible guardado de artifacts
+
     # - name: Build Docker image
     #   run: docker build --no-cache -t ml-api:${{ github.sha }} .
 
