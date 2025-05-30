@@ -1,5 +1,5 @@
 # Configuracion
-path: /content/food_dataset/UECFoodPIXCOMPLETE
+path: UECFoodPIXCOMPLETE
 train: train
 val: val
 test: test

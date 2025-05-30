@@ -1,0 +1,14 @@
+method: bayes
+metric:
+  name: metrics/mAP50-95(M)
+  goal: maximize
+parameters:
+  lr0:
+    min: 0.0001
+    max: 0.01
+  mask_ratio:
+    values: [2, 4, 8]
+  overlap_mask:
+    values: [True, False]
+  batch:
+    values: [8, 16, 32]

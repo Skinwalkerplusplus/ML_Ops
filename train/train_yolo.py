@@ -55,11 +55,11 @@ def rgb_mask_to_yolo_txt(mask_path, output_txt_path):
                     f.write(f"{class_id} " + " ".join(map(str, polygon)) + "\n")
 
 # Procesamos las imagenes
-mask_dir = Path("/content/food_dataset/UECFoodPIXCOMPLETE/mask_train")
-test_dir = Path("/content/food_dataset/UECFoodPIXCOMPLETE/mask_test")
-output_label_dir = Path("/content/food_dataset/UECFoodPIXCOMPLETE/train/labels")  # Output label
+mask_dir = Path("UECFoodPIXCOMPLETE/mask_train")
+test_dir = Path("UECFoodPIXCOMPLETE/mask_test")
+output_label_dir = Path("UECFoodPIXCOMPLETE/train/labels")  # Output label
 output_label_dir.mkdir(parents=True, exist_ok=True)
-output_test_dir = Path("/content/food_dataset/UECFoodPIXCOMPLETE/test/labels")  # Output test
+output_test_dir = Path("UECFoodPIXCOMPLETE/test/labels")  # Output test
 output_test_dir.mkdir(parents=True, exist_ok=True)
 
 for png_path in mask_dir.glob("*.png"):
@@ -72,9 +72,9 @@ for png_path in test_dir.glob("*.png"):
 
 
 
-image_dir = Path("/content/food_dataset/UECFoodPIXCOMPLETE/train/images")
-label_dir = Path("/content/food_dataset/UECFoodPIXCOMPLETE/train/labels")
-mask_dir = Path("/content/food_dataset/UECFoodPIXCOMPLETE/mask_train")
+image_dir = Path("UECFoodPIXCOMPLETE/train/images")
+label_dir = Path("UECFoodPIXCOMPLETE/train/labels")
+mask_dir = Path("UECFoodPIXCOMPLETE/mask_train")
 
 # Cuentas de clase
 class_counts = defaultdict(int)
@@ -136,8 +136,10 @@ for class_id, count in class_counts.items():
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             mask = cv2.imread(str(mask_file), cv2.IMREAD_GRAYSCALE)
 
+            mask = np.squeeze(mask)
+
             if mask.shape[0] != img.shape[0] or mask.shape[1] != img.shape[1]:
-                mask = mask.transpose(1, 0)
+                mask = mask.T
 
             # Leemos labels originales
             with open(label_file, 'r') as f:
@@ -182,8 +184,8 @@ for class_id, count in sorted(class_counts.items()):
 
 
 
-image_dir = "/content/food_dataset/UECFoodPIXCOMPLETE/train/images"
-label_dir = "/content/food_dataset/UECFoodPIXCOMPLETE/train/labels"
+image_dir = "UECFoodPIXCOMPLETE/train/images"
+label_dir = "UECFoodPIXCOMPLETE/train/labels"
 val_ratio = 0.1  # Porcentaje para la validacion
 
 # Conseguimos todos los directorios
@@ -191,27 +193,42 @@ image_files = [f.split(".")[0] for f in os.listdir(image_dir) if f.endswith(".jp
 train_files, val_files = train_test_split(image_files, test_size=val_ratio, random_state=42)
 
 # Creamos carpetas de validacion
-os.makedirs("/content/food_dataset/UECFoodPIXCOMPLETE/val/images", exist_ok=True)
-os.makedirs("/content/food_dataset/UECFoodPIXCOMPLETE/val/labels", exist_ok=True)
+os.makedirs("UECFoodPIXCOMPLETE/val/images", exist_ok=True)
+os.makedirs("UECFoodPIXCOMPLETE/val/labels", exist_ok=True)
 
 # Movemos a carpetas de validacion
 for file in val_files:
     # Imagenes
     os.rename(
         f"{image_dir}/{file}.jpg",
-        f"/content/food_dataset/UECFoodPIXCOMPLETE/val/images/{file}.jpg"
+        f"UECFoodPIXCOMPLETE/val/images/{file}.jpg"
     )
     # Labels
     if os.path.exists(f"{label_dir}/{file}.txt"):
         os.rename(
             f"{label_dir}/{file}.txt",
-            f"/content/food_dataset/UECFoodPIXCOMPLETE/val/labels/{file}.txt"
+            f"UECFoodPIXCOMPLETE/val/labels/{file}.txt"
         )
 
 print(f"Train: {len(train_files)} images | Val: {len(val_files)} images")
 
-model = YOLO("yolov8s-seg.pt")  # Modelo seleccionado
-model.train(data="food_seg.yaml", epochs=5, verbose=False)
+# model = YOLO("yolov8s-seg.pt")  # Modelo seleccionado
+# model.train(data="train/food_seg.yaml", epochs=5, verbose=False)
+
+def train():
+    model = YOLO("yolov8s-seg.pt")  # Load segmentation model
+    model.train(
+        data="train/food_seg.yaml",
+        epochs=5,
+        lr0=wandb.config.lr0,
+        mask_ratio=wandb.config.mask_ratio,
+        overlap_mask=wandb.config.overlap_mask,
+        batch=wandb.config.batch,
+        project="yolov8-training",
+    )
+
+sweep_id = wandb.sweep(sweep="train/yolo_sweep.yaml", project="yolov8-training")
+wandb.agent(sweep_id, function=train, count=20)
 
 metrics = model.val()
 

@@ -1,0 +1,16 @@
+{
+  "os": "Windows-10-10.0.26100-SP0",
+  "python": "CPython 3.10.11",
+  "startedAt": "2025-05-29T23:03:36.816966Z",
+  "program": "C:\\Users\\pepe\\Documents\\ML_Ops\\train\\train_yolo.py",
+  "codePath": "train\\train_yolo.py",
+  "git": {
+    "remote": "https://github.com/Skinwalkerplusplus/ML_Ops.git",
+    "commit": "5439d867af068a0eac8b62947d44db79dce15637"
+  },
+  "email": "ziroldjr@gmail.com",
+  "root": "C:\\Users\\pepe\\Documents\\ML_Ops",
+  "host": "DESKTOP-9QJINEL",
+  "executable": "C:\\Users\\pepe\\Documents\\ML_Ops\\venv\\Scripts\\python.exe",
+  "codePathLocal": "train\\train_yolo.py"
+}
