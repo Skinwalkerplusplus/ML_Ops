@@ -73,13 +73,15 @@ jobs:
       run: |
         docker tag ml-api:${{ github.sha }} skinwalkerirl/ml-api:${{ github.sha }}
         docker push skinwalkerirl/ml-api:${{ github.sha }}
-    
-    # - name: Deploy to Server
-    #   uses: appleboy/ssh-action@master
-    #   with:
-    #     host: ${{ secrets.SSH_HOST }}
-    #     username: ${{ secrets.SSH_USER }}
-    #     key: ${{ secrets.SSH_KEY }}
-    #     script: |
-    #       docker pull skinwalkerirl/ml-api:${{ github.sha }}
-    #       docker-compose up -d
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'your-app-name'
+        slot-name: 'production'
+        package: .  

@@ -1,0 +1,42 @@
+{
+  "os": "Windows-10-10.0.26100-SP0",
+  "python": "CPython 3.10.11",
+  "startedAt": "2025-05-30T21:23:24.476589Z",
+  "program": "C:\\Users\\pepe\\Documents\\ML_Ops\\train\\train_yolo.py",
+  "codePath": "train\\train_yolo.py",
+  "git": {
+    "remote": "https://github.com/Skinwalkerplusplus/ML_Ops.git",
+    "commit": "cc6dc61ad4e3df1bfc71eded06e2fa98b602ec14"
+  },
+  "email": "ziroldjr@gmail.com",
+  "root": "C:\\Users\\pepe\\Documents\\ML_Ops",
+  "host": "DESKTOP-9QJINEL",
+  "executable": "C:\\Users\\pepe\\Documents\\ML_Ops\\venv\\Scripts\\python.exe",
+  "codePathLocal": "train\\train_yolo.py",
+  "cpu_count": 6,
+  "cpu_count_logical": 12,
+  "gpu": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "510964789248",
+      "used": "320453009408"
+    }
+  },
+  "memory": {
+    "total": "16800309248"
+  },
+  "cpu": {
+    "count": 6,
+    "countLogical": 12
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+      "memoryTotal": "4294967296",
+      "cudaCores": 2560,
+      "architecture": "Ampere"
+    }
+  ],
+  "cudaVersion": "12.7"
+}

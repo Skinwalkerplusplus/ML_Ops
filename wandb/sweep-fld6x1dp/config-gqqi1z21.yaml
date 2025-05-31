@@ -1,0 +1,10 @@
+wandb_version: 1
+
+batch:
+  value: 32
+lr0:
+  value: 0.0027673583958236513
+mask_ratio:
+  value: 8
+overlap_mask:
+  value: false
