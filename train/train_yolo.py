@@ -60,6 +60,7 @@ sweep_id = wandb.sweep(sweep=sweep_config, project="yolov8-training")
 wandb.agent(sweep_id, function=train, count=20)
 
 metrics = model.val()
+model.save('Food_seg_model.pt')
 
 # Resultados
 print(f"mAP@0.5: {metrics.box.map50}")
