@@ -85,3 +85,5 @@ jobs:
         app-name: 'MLOpsJRB'
         slot-name: 'production'
         package: .  
+        clean: true  # Cleans target directory before deployment
+        restart: true  # Restarts app after deployment
